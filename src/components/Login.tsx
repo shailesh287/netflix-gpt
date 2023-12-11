@@ -1,41 +1,84 @@
 import React, { createRef, useRef, useState } from "react";
 import Header from "./Header";
 import { BG_URL, USER_AVATAR } from "../utils/constant";
-import { checkValidData } from "../utils/Validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useDispatch } from "react-redux";
 import { removeUser, setUser } from "../utils/userSlice";
 import { useAppDispatch } from "../utils/hooks";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const dispatch = useAppDispatch();
 
   const name = createRef<HTMLInputElement>();
-  const email = createRef<HTMLInputElement>();
-  const password = createRef<HTMLInputElement>();
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const validateEmail = (value: string): string => {
+    if (!value) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      return "Please enter a valid email address";
+    }
+    return "";
+  };
+
+  const validatePassword = (value: string): string => {
+    if (!value) {
+      return "Password is required";
+    }
+    if (value.length < 6) {
+      return "Password must be at least 6 characters long";
+    }
+    return "";
+  };
+
+  const handleValidation = (field: keyof typeof formData) => {
+    const value = formData[field];
+    let error = "";
+
+    switch (field) {
+      case "email":
+        error = validateEmail(value);
+        break;
+      case "password":
+        error = validatePassword(value);
+        break;
+      default:
+        break;
+    }
+
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+  };
+
+  const inputClassName = (field: keyof typeof errors) => {
+    return errors[field] ? "border-2 border-rose-600" : "";
+  };
   const handleButtonClick = () => {
-    const message = checkValidData(
-      email.current?.value ?? "",
-      password.current?.value ?? ""
-    );
-    setErrorMessage(message);
-
-    if (message) return;
+    if (errors.email !== "" || errors.password !== "") return;
 
     if (!isSignInForm) {
-      createUserWithEmailAndPassword(
-        auth,
-        email.current?.value ?? "",
-        password.current?.value ?? ""
-      )
+      createUserWithEmailAndPassword(auth, formData.email, formData.password)
         .then((userCredential) => {
           const user = userCredential.user;
 
@@ -64,24 +107,14 @@ const Login = () => {
           setErrorMessage(`${errorCode}-${errorMessage}`);
         });
     } else {
-      signInWithEmailAndPassword(
-        auth,
-        email.current?.value ?? "",
-        password.current?.value ?? ""
-      )
+      signInWithEmailAndPassword(auth, formData.email, formData.password)
         .then((userCredential) => {
           const user = userCredential.user;
         })
         .catch((error) => {
-          // const errorCode = error.code;
-          // const errorMessage = error.message;
           setErrorMessage(error.message);
         });
     }
-    console.log(message, "----------mmmmm");
-
-    console.log(email.current?.value, "eeeeeeeeeee");
-    console.log(password.current?.value, "ppppppppppppppp");
   };
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
@@ -107,25 +140,43 @@ const Login = () => {
 
         {!isSignInForm && (
           <input
-            ref={name}
             type="text"
-            placeholder="Full Name"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
             className="p-4 my-4 w-full bg-gray-700"
           />
         )}
         <input
-          ref={email}
           type="text"
+          id="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          onBlur={() => handleValidation("email")}
           placeholder="Email Address"
-          className="p-4 my-4 w-full bg-gray-700"
+          className={`p-4 my-4 w-full bg-gray-700 rounded-md ${inputClassName(
+            "email"
+          )}`}
         />
+        {errors.email && <div className="text-red-500">{errors.email}</div>}
         <input
-          ref={password}
           type="password"
+          id="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          onBlur={() => handleValidation("password")}
           placeholder="Password"
-          className="p-4 my-4 w-full bg-gray-700"
+          className={`p-4 my-4 w-full bg-gray-700 rounded-md ${inputClassName(
+            "password"
+          )} `}
         />
-        <p className="text-red-500 font-bold text-lg py-2">{errorMessage}</p>
+        {errors.password && (
+          <div className="text-red-500">{errors.password}</div>
+        )}
+        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
         <button
           className="p-4 my-6 bg-red-700 w-full rounded-lg"
           onClick={handleButtonClick}
