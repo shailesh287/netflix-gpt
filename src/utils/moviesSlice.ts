@@ -22,13 +22,15 @@ type Movie  = {
   }
 type MoviesState = {
   nowPlayingMovies: Movie[] | null;
-  popularMovies: Movie[] | null;
+  popularMovies: Movie[]  ;
+  upcomingMovies: Movie[] ;
   trailerVideo: Trailer[] | null ;
 };
 
 const initialState: MoviesState = {
   nowPlayingMovies: null,
-  popularMovies: null,
+  popularMovies: [],
+  upcomingMovies: [],
   trailerVideo: null,
 };
 
@@ -38,12 +40,12 @@ const moviesSlice = createSlice({
   reducers: {
     addNowPlayingMovies: (state, action: PayloadAction<Movie[]>) => {
       state.nowPlayingMovies = action.payload;
-      console.log(state.nowPlayingMovies, "-");
-      
     },
     addPopularMovies: (state, action: PayloadAction<Movie[]>) => {
       state.popularMovies = action.payload;
-
+    },
+    addUpcomingMovies: (state, action: PayloadAction<Movie[]>) => {
+      state.upcomingMovies = action.payload;
     },
     addTrailerVideo: (state, action: PayloadAction<Trailer[]>) => {
       state.trailerVideo = action.payload;
@@ -56,7 +58,8 @@ const moviesSlice = createSlice({
 export const {
   addNowPlayingMovies,
   addTrailerVideo,
-  addPopularMovies
+  addPopularMovies,
+  addUpcomingMovies
 } = moviesSlice.actions;
 
 export default moviesSlice.reducer;

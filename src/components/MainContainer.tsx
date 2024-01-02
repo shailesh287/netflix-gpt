@@ -1,4 +1,3 @@
-import { useSelector } from "react-redux";
 import VideoBackground from "./VideoBackground";
 import VideoTitle from "./VideoTitle";
 import { useAppSelector } from "../utils/hooks";
@@ -26,7 +25,7 @@ const MainContainer = () => {
   console.log({ original_title, overview, id });
 
   return (
-    <div className="pt-[30%] bg-black md:pt-0">
+    <div>
       <VideoTitle title={original_title} overview={overview} />
       <VideoBackground movieId={id} />
     </div>

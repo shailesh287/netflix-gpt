@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { LOGO, USER_AVATAR } from "../utils/constant";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../utils/hooks";
 
 const Header = () => {
+  const [sticky, setSticky] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const user = useAppSelector((store) => store.user);
@@ -17,6 +18,15 @@ const Header = () => {
         navigate("/error");
       });
   };
+
+  const handleScroll = () => {
+    if (window.scrollY > 10) {
+      setSticky(true);
+    } else {
+      setSticky(false);
+    }
+  };
+  window.addEventListener("scroll", handleScroll);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -41,12 +51,16 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
+    <div
+      className={`flex flex-row bg-transparent items-center justify-between px-12  fixed top-0 left-0 right-0 w-full z-50 ${
+        sticky ? "shadow-xl !bg-black" : ""
+      }`}
+    >
       <img className="w-44 mx-auto md:mx-0" src={LOGO} alt="logo" />
       {user.user && (
         <div className="flex p-2 justify-between">
           <img
-            className="hidden md:block w-10 h-10"
+            className="hidden md:block w-9 h-9"
             alt="usericon"
             src={user?.photoURL ? user?.photoURL : USER_AVATAR}
           />
