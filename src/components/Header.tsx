@@ -52,21 +52,21 @@ const Header = () => {
 
   return (
     <div
-      className={`flex flex-row bg-transparent items-center justify-between px-12  fixed top-0 left-0 right-0 w-full z-50 ${
+      className={`flex flex-row bg-transparent items-center justify-between md:px-12  fixed top-0 left-0 right-0 w-full z-50 ${
         sticky ? "shadow-xl !bg-black" : ""
       }`}
     >
-      <img className="w-44 mx-auto md:mx-0" src={LOGO} alt="logo" />
+      <img className="w-44  md:mx-0" src={LOGO} alt="logo" />
       {user.user && (
         <div className="flex p-2 justify-between">
           <img
-            className="hidden md:block w-9 h-9"
+            className="hidden md:block w-9 h-9 rounded-md"
             alt="usericon"
             src={user?.photoURL ? user?.photoURL : USER_AVATAR}
           />
           <button
             onClick={handleSignOut}
-            className="font-bold text-white px-3 h-8 ml-4 rounded-md bg-red-500"
+            className="md:font-bold text-white px-3 h-8 ml-4 rounded-md bg-red-500"
           >
             Sign Out
           </button>

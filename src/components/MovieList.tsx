@@ -9,12 +9,13 @@ type movieList = {
   title: string;
   movies: Movie[];
 };
+
 const MovieList = (props: movieList) => {
   return (
     <div className="px-6 ">
       <h1 className="text-lg md:text-3xl py-4 text-white">{props.title}</h1>
-      <div className="flex overflow-x-scroll">
-        <div className="flex">
+      <div className="scroll-container relative md:p-[20px]">
+        <div className="flex relative  ">
           {props?.movies.map((movie) => (
             <MovieCard key={movie?.id} posterPath={movie.poster_path} />
           ))}

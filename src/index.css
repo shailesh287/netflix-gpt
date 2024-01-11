@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.scroll-container {
+    display: flex;
+    overflow-x: scroll;
+  }
+
+  .scroll-container::-webkit-scrollbar {
+    width: 0.5em;
+  }
+
+  .scroll-container::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  .scroll-container::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+  .scroll-container :hover {
+    cursor: pointer;
+  }
