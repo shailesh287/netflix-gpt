@@ -56,7 +56,7 @@ const Header = () => {
         sticky ? "shadow-xl !bg-black" : ""
       }`}
     >
-      <img className="w-44  md:mx-0" src={LOGO} alt="logo" />
+      <img className="w-24 md:w-44  md:mx-0" src={LOGO} alt="logo" />
       {user.user && (
         <div className="flex p-2 justify-between">
           <img
@@ -66,7 +66,7 @@ const Header = () => {
           />
           <button
             onClick={handleSignOut}
-            className="md:font-bold text-white px-3 h-8 ml-4 rounded-md bg-red-500"
+            className="md:font-bold text-white md:px-3 px-1 h-6 md:h-8 md:ml-4 text-sm md:text-md rounded-md bg-red-500"
           >
             Sign Out
           </button>
